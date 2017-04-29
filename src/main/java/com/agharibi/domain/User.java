@@ -7,14 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class User implements DomainObject {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
-
-    @Version
-    private Integer version;
+public class User extends AbstractDomain {
 
     private String username;
 
@@ -33,24 +26,6 @@ public class User implements DomainObject {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
     private List<Role> roles = new ArrayList<>();
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
 
     public String getUsername() {
         return username;

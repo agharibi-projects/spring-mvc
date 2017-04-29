@@ -33,8 +33,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/js").permitAll()
                 .and().formLogin().permitAll()
                 .and().authorizeRequests().antMatchers("/customer/**").authenticated()
-                .and().authorizeRequests().antMatchers("/user/**").authenticated()
-                .and().exceptionHandling().accessDeniedPage("/access_denied");
+                .and().authorizeRequests().antMatchers("/user/**").hasAnyAuthority("ADMIN")
+                .and().exceptionHandling().accessDeniedPage("/access_denied")
+                .and().headers().frameOptions().disable();
     }
 
     @Bean

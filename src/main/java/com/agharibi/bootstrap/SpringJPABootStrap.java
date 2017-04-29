@@ -30,12 +30,17 @@ public class SpringJPABootStrap implements ApplicationListener<ContextRefreshedE
         loadOrderHistory();
         loadRoles();
         assignUsersToDefaultRole();
+        assignUsersToAdminRole();
     }
 
     private void loadRoles() {
         Role role = new Role();
         role.setRole("CUSTOMER");
         roleService.saveOrUpdate(role);
+
+        Role adminRole = new Role();
+        adminRole.setRole("ADMIIN");
+        roleService.saveOrUpdate(adminRole);
     }
 
     private void assignUsersToDefaultRole() {
@@ -47,6 +52,22 @@ public class SpringJPABootStrap implements ApplicationListener<ContextRefreshedE
                 users.forEach(user -> {
                     user.addRole(role);
                     userService.saveOrUpdate(user);
+                });
+            }
+        });
+    }
+
+    private void assignUsersToAdminRole() {
+        List<Role> roles = (List<Role>) roleService.listAll();
+        List<User> users = (List<User>) userService.listAll();
+
+        roles.forEach(role ->{
+            if(role.getRole().equalsIgnoreCase("ADMIIN")) {
+                users.forEach(user -> {
+                    if (user.getUsername().equals("fglenanne")) {
+                        user.addRole(role);
+                        userService.saveOrUpdate(user);
+                    }
                 });
             }
         });
