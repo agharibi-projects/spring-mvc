@@ -21,6 +21,22 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AuthenticationProvider authenticationProvider;
 
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.csrf().ignoringAntMatchers("/h2-console").disable()
+                .authorizeRequests().antMatchers("/**/favicon.ico") .permitAll()
+                .and().authorizeRequests().antMatchers("/product/**").permitAll()
+                .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
+                .and().authorizeRequests().antMatchers("/static/css").permitAll()
+                .and().authorizeRequests().antMatchers("/js").permitAll()
+                .and().formLogin().permitAll()
+                .and().authorizeRequests().antMatchers("/customer/**").authenticated()
+                .and().authorizeRequests().antMatchers("/user/**").authenticated()
+                .and().exceptionHandling().accessDeniedPage("/access_denied");
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor) {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -49,10 +65,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationManagerBuilder.authenticationProvider(authenticationProvider);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/").permitAll();
-    }
 
     @Autowired
     @Qualifier("daoAuthenticationProvider")
