@@ -3,6 +3,7 @@ package com.agharibi.reposervices;
 import com.agharibi.domain.User;
 import com.agharibi.repositories.UserRepository;
 import com.agharibi.services.UserService;
+import com.agharibi.services.security.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 public class UserRepoServiceImpl implements UserService {
 
     private UserRepository userRepository;
+    private EncryptionService encryptionService;
 
     @Override
     public List<?> listAll() {
@@ -30,6 +32,9 @@ public class UserRepoServiceImpl implements UserService {
 
     @Override
     public User saveOrUpdate(User domainObject) {
+        if(domainObject.getPassword() != null){
+            domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
+        }
         return userRepository.save(domainObject);
     }
 
@@ -46,5 +51,10 @@ public class UserRepoServiceImpl implements UserService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setEncryptionService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
     }
 }
